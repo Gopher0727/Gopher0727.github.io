@@ -1,0 +1,17 @@
+version: '3.9'
+
+services:
+  mysql:
+    image: mysql:latest
+    container_name: mysql-bug
+    environment:
+      MYSQL_ROOT_PASSWORD: "1900271083" # 这里设置一个非空密码
+      MYSQL_DATABASE: "test"
+    ports:
+      - "33061:3306"
+    volumes:
+      - mysql-data:/var/lib/mysql # 使用 Docker 卷持久化数据
+    restart: unless-stopped
+
+volumes:
+  mysql-data: # 持久化 MySQL 数据库

@@ -1,0 +1,17 @@
+```go
+// mysql 四个隔离级别的主要区别就在于能否在 transaction 中读取到其他 transaction 正在改动的数据
+
+// Serializable     不受任何影响，只能看到 transaction 开始的全局景象
+// Repeatable Read  允许看到别人 insert 或者 delete 后的结果
+// Read committed   在此基础上，允许看到别人 update 后的结果
+// Read uncommitted 其他 transaction 还没有保存的修改都可以看到
+
+
+// mysql 奇怪的设定：如果命令里只有 select 查询，执行 Repeatable Read；如果混入 insert 命令，那么 select 就执行 Read committed。
+
+
+// 复现：
+// 两个 mysql 客户端都开启事务
+// 一个客户端执行 test1.sql，另一个执行 test2.sql
+
+```

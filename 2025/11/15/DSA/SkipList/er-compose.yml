@@ -1,0 +1,34 @@
+services:
+  kafka:
+    image: apache/kafka:latest
+    container_name: kafka
+    restart: unless-stopped # 除非手动停止，否则容器退出时自动重启
+    environment:
+      - KAFKA_ENABLE_KRAFT=yes
+      # 节点角色：同时作为控制器(controller)和 broker
+      # 在KRaft模式下，节点可以是纯控制器、纯broker或混合角色
+      - KAFKA_PROCESS_ROLES=controller,broker
+      # 节点ID：在集群中唯一标识当前节点，取值范围1-255
+      - KAFKA_NODE_ID=1
+      - KAFKA_CONTROLLER_QUORUM_VOTERS=1@localhost:9093
+      # 指定控制器使用的监听器名称（需与下方LISTENERS配置对应）
+      - KAFKA_CONTROLLER_LISTENER_NAMES=CONTROLLER
+      # 指定broker之间通信使用的监听器名称
+      # 必须与ADVERTISED_LISTENERS中定义的监听器名称一致
+      - KAFKA_INTER_BROKER_LISTENER_NAME=INTERNAL
+      # 配置Kafka监听的网络接口和端口
+      # 格式：监听器名称://绑定地址:端口
+      # INTERNAL: 用于内部通信和客户端连接的监听器，绑定所有网络接口(:9092)
+      # CONTROLLER: 用于控制器之间通信的监听器，绑定所有网络接口(:9093)
+      - KAFKA_LISTENERS=INTERNAL://:9092,CONTROLLER://:9093
+      # 配置对外公告的监听器地址（客户端实际连接的地址）
+      # 当客户端连接Kafka时，Kafka会返回此地址给客户端
+      # 这里设置为宿主机的IP:端口（需根据实际环境修改localhost为宿主机IP）
+      - KAFKA_ADVERTISED_LISTENERS=INTERNAL://localhost:9092
+      # 配置监听器的安全协议映射
+      # 格式：监听器名称:协议类型
+      # PLAINTEXT表示不加密传输（适用于开发环境）
+      - KAFKA_LISTENER_SECURITY_PROTOCOL_MAP=CONTROLLER:PLAINTEXT,INTERNAL:PLAINTEXT
+    ports:
+      - "9092:9092" # 客户端连接端口
+      - "9093:9093" # 控制器通信端口
