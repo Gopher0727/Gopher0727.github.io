@@ -1,9 +1,0 @@
-START TRANSACTION;
-
-SELECT * FROM test;
-
-INSERT INTO test_backup SELECT * FROM test;
-
-COMMIT;
-
-SELECT * FROM test_backup;

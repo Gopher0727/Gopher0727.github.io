@@ -1,9 +1,0 @@
--- Active: 1756015859884@@127.0.0.1@33061@test
-
-START TRANSACTION;
-
-UPDATE test SET name = "gopher";
-
-SELECT SLEEP(10);
-
-COMMIT;
